@@ -1,8 +1,18 @@
 import express from "express";
+import { createServer } from "http";
+import { Server, Socket } from "socket.io";
 import "./database";
 import { routes } from "./routes";
 
 const app = express();
+
+const http = createServer(app);//Criando protocolo http
+
+const io = new Server(http);//Criando protocolo ws
+
+io.on("connection", (socket: Socket) => {
+    console.log("Conectou-se ", socket.id)
+})
 
 /*
  * GET = Buscas
@@ -11,8 +21,9 @@ const app = express();
  * DELETE = Deletar
  * PATCH = Alterar uma informação específica
  */
+
 app.use(express.json());
 
 app.use(routes);
 
-app.listen(3333, () => console.log("Server is running on port 3333"));
+http.listen(3333, () => console.log("Server is running on port 3333"));
